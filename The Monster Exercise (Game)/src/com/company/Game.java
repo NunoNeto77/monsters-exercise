@@ -1,13 +1,18 @@
 package com.company;
+
 import java.util.Scanner;
+import java.util.Arrays;
 
 public class Game {
 
     Player player1 = new Player("joão");
     Player player2 = new Player("gon");
 
+
+
     private int round = 0;
- //   boolean quit = false;
+    private SuperNatural obstacle;
+
 
     public void start() {
         Scanner input = new Scanner(System.in);  // Create a Scanner object
@@ -29,7 +34,15 @@ public class Game {
         round++;
         System.out.println("     Round " + round + "\n     FIGHT!");
 
-        chooseAttacker(this.player1, this.player2);
+        boolean isObstacleCreated = createObstacles();
+
+        if (isObstacleCreated) {
+            obstacleMove();
+        }
+            else {
+                normalRound(player1, player2);
+        }
+
         removeDeadMonster(player1);
         removeDeadMonster(player2);
 
@@ -37,23 +50,40 @@ public class Game {
         player2.printMonsters(player2.getMonsters());
     }
 
+    public boolean createObstacles() {
+        int random = (int) (Math.floor(Math.random() * 6));
 
-     public void chooseAttacker(Player player1, Player player2) {
-         int random = (int) (Math.floor(Math.random() * 2));
+        if (random == 2) {
+            System.out.println("A Fairy was created!");
+            obstacle = new Fairy();
+            return true;
 
-         if (random == 0) {
-             System.out.println(player1.getNickname() + " will attack!");
-             defender(player2, player1);
+        }   else if (random == 5) {
+                System.out.println("A Witch was created!");
+                obstacle = new Witch();
+                return true;
 
-         }
-         else {
-             System.out.println(player2.getNickname() + " will attack!");
-             defender(player1, player2);
-         }
-     }
+        } else {
+            return false;
+        }
+    }
 
 
-     public void defender(Player defender, Player attacker ) {
+    public void normalRound(Player player1, Player player2) {
+        int random = (int) (Math.floor(Math.random() * 2));
+
+        if (random == 0) {
+            System.out.println(player1.getNickname() + " will attack!");
+            defender(player2, player1);
+
+        } else {
+            System.out.println(player2.getNickname() + " will attack!");
+            defender(player1, player2);
+        }
+    }
+
+
+    public void defender(Player defender, Player attacker) {
         int monsterDefending = (int) (Math.random() * defender.getMonsters().length);
         int monsterAttacking = (int) (Math.random() * attacker.getMonsters().length);
 
@@ -62,46 +92,61 @@ public class Game {
 
         defender.getMonsters()[monsterDefending].defend(attacker.getMonsters()[monsterAttacking].attack());
 
+    }
+
+
+    public void obstacleMove() {  // if the obstacles will attack or defend
+        int random = (int) (Math.floor(Math.random() * 2));
+
+        int player1Monster = (int) (Math.random() * player1.getMonsters().length);
+        int player2Monster = (int) (Math.random() * player2.getMonsters().length);
+
+        if (random == 0) {    // obstacles will attack
+            System.out.println("The " + obstacle.getName() + " will attack both players!");
+
+            System.out.println(player1.getMonsters()[player1Monster].getName() + " will be attacked (player 1)");
+            System.out.println(player2.getMonsters()[player2Monster].getName() + " will be attacked (player 2)");
+
+            player1.getMonsters()[player1Monster].defend(obstacle.getHitPower());
+            player2.getMonsters()[player2Monster].defend(obstacle.getHitPower());
+        }
+
+            else {   //obstacles will be attacked
+                if (obstacle instanceof Fairy) {
+                    System.out.println("You can't attack a Fairy!");
+                }
+                    else {
+                        ((Witch) obstacle).defend(player1.getMonsters()[player1Monster].getHitPower() + player2.getMonsters()[player2Monster].getHitPower());
+                }
+
+            }
+
         }
 
 
     public void winner() {
         if (player1.getMonsters().length > player2.getMonsters().length) {
             System.out.println(player1.getNickname() + " won the game!");
-        }
-            else {
-                 System.out.println(player2.getNickname() + " won the game!");
+        } else {
+            System.out.println(player2.getNickname() + " won the game!");
         }
 
     }
 
     public Monster[] removeDeadMonster(Player player) {
-        Monster[] tempMonster = new Monster[player.getMonsters().length - 1];
-        int j = 0;
+        Monster[] tempMonster = {};
         for (int i = 0; i < player.getMonsters().length; i++) {
+            // [1, 2, 3,4] --> 2
             if (player.getMonsters()[i].isAlive()) {
-                tempMonster[j] = player.getMonsters()[i];
-                j++;
+                //       [1, 3, 4,0]
+                tempMonster = Arrays.copyOf(tempMonster, tempMonster.length + 1);
+                tempMonster[tempMonster.length - 1] = player.getMonsters()[i];
+
             }
         }
         player.setMonsters(tempMonster);
         return player.getMonsters();
 
     }
-
-
-
 }
 
-/*
-  public void checkGameContinue(Player player) {
-    if (player.monsters.length == 0) {
-             System.out.println(player.getNickname() + " you lost the game!\n");
-             winner();
-     }
-         else {
-             System.out.println(player.monsters);
-             rounds();
-         }
-    }
-   */
