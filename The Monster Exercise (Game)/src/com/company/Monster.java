@@ -1,40 +1,23 @@
 package com.company;
 
-public abstract class Monster {
+import java.lang.reflect.Type;
 
-    private String name;
-    MonsterType monsterType;
-    private int health;
+public abstract class Monster extends SuperNatural implements Strikeable {
 
-    public Monster(String name, MonsterType monsterType) {
-        this.name = name;
-        this.monsterType = monsterType;
-        this.health = 100;
+    MonsterType type;
+    //  private boolean dead;
 
+    public Monster(MonsterType type) {
+        super(type.name(), type.getHitPower());
+        this.type = type;
+    }
+
+    public void defend(int damage) {
+        setHealth(getHealth() - damage);
+
+        if (getHealth() < 0) {
+            setHealth(0);
         }
-
-        public abstract int attack();
-
-        public abstract void defend(int damage);
-
-        public abstract boolean isAlive();
-
-
-
-    public String getName() {
-        return this.name;
-    }
-
-    public int getHealth() {
-        return this.health;
-    }
-
-    public void setHealth(int health) {
-        this.health = health;
-    }
-
-    public void printMonster() {
-        System.out.print(getName() + " (health: " + getHealth() + " | hit power: " + monsterType.getHitPower() + ")\n");
     }
 }
 
