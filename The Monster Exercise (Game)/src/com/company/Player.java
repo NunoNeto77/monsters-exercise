@@ -19,15 +19,15 @@ public class Player {
 
             switch (random) {
                 case 0:
-                    this.monsters[i] = new Werewolf("Werewolf");
+                    this.monsters[i] = new Werewolf();
                     break;
 
                 case 1:
-                    this.monsters[i] = new Vampire("Vampire");
+                    this.monsters[i] = new Vampire();
                     break;
 
                 case 2:
-                    this.monsters[i] = new Mummy("Mummy");
+                    this.monsters[i] = new Mummy();
                     break;
 
             }
@@ -39,16 +39,13 @@ public class Player {
 
     }
 
-
-
         public void printMonsters(Monster[] monsters) {
             for (int i = 0; i < monsters.length; i++) {
                 monsters[i].printMonster();
             }
         }
 
-
-
+        
     public String getNickname() {
         return this.nickname;
     }
