@@ -43,8 +43,8 @@ public class Game {
                 normalRound(player1, player2);
         }
 
-        player1.removeDeadMonster(player1);
-        player2.removeDeadMonster(player2);
+        removeDeadMonster(player1);
+        removeDeadMonster(player2);
 
         player1.printMonsters(player1.getMonsters());
         player2.printMonsters(player2.getMonsters());
@@ -124,6 +124,24 @@ public class Game {
         }
 
 
+    public Monster[] removeDeadMonster(Player player) {
+        Monster[] tempMonster = {};
+        for (int i = 0; i < player.getMonsters().length; i++) {
+            // [1, 2, 3,4] --> 2
+            if (player.getMonsters()[i].isAlive()) {
+                //       [1, 3, 4,0]
+                tempMonster = Arrays.copyOf(tempMonster, tempMonster.length + 1);
+                tempMonster[tempMonster.length - 1] = player.getMonsters()[i];
+
+            }
+        }
+        player.setMonsters(tempMonster);
+        return player.getMonsters();
+
+    }
+
+
+
     public void winner() {
         if (player1.getMonsters().length > player2.getMonsters().length) {
             System.out.println(player1.getNickname() + " won the game!");
@@ -133,6 +151,6 @@ public class Game {
 
     }
 
-   
+
 }
 
